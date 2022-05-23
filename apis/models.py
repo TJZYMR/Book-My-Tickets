@@ -66,6 +66,12 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
     objects = UserManager()
 
+    def isAdmin(self):
+        if self.permission == "admin":
+            return True
+        else:
+            return False
+
     def __str__(self):
         return self.name
 

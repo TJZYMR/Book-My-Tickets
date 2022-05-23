@@ -76,7 +76,7 @@ class LoginView(APIView):
 
 class UserView(APIView):
     def get(self, request):
-        token = request.COOKIES.get("jwt")
+        token = request.COOKIES.get("token")
 
         if not token:
             raise AuthenticationFailed("Unauthenticated!")
@@ -107,44 +107,6 @@ class PassengerViewSet(viewsets.ModelViewSet):
         return passenger
 
 
-# class ReadOnly(BasePermission):
-#     def has_permission(self, request, view):
-#         return request.method in SAFE_METHODS
-
-
-# class IsAdminUser(BasePermission):
-#     """
-#     Allows access only to admin users.
-#     """
-
-#     def has_permission(self, request, view):
-#         return bool(request.user and request.user.is_superuser)
-
-
-# class TokenAuthSupportCookie(TokenAuthentication):
-#     """
-#     Extend the TokenAuthentication class to support cookie based authentication
-#     """
-
-#     def authenticate(self, request):
-#         # Check if 'auth_token' is in the request cookies.
-#         # Give precedence to 'Authorization' header.
-#         if "token" in request.COOKIES and "HTTP_AUTHORIZATION" not in request.META:
-#             return self.authenticate_credentials(request.COOKIES.get("token"))
-#         return super().authenticate(request)
-
-
-# class BlocklistPermission(permissions.BasePermission):
-#     def has_permission(self, request, view):
-#         token = request.COOKIES.get("jwt")
-#         if not token:
-#             raise AuthenticationFailed("Unauthenticated!")
-
-#         payload = jwt.decode(token, "secret", algorithm=["HS256"])
-#         user = User.objects.filter(id=payload["id"]).exists()
-#         return user
-
-
 class FlightDetailsViewSet(viewsets.ModelViewSet):
     queryset = FlightDetails.objects.all()
     serializer_class = FlightDetailsSerializers
@@ -160,27 +122,22 @@ class FlightDetailsViewSet(viewsets.ModelViewSet):
         "airport",
     ]
 
-    def list(self, request):
-        token = request.COOKIES.get("token")
+    # def list(self, request, *args, **kwargs):
+    #     token = request.COOKIES.get("token")
 
-        if not token:
-            raise AuthenticationFailed("Unauthenticated!")
+    #     if not token:
+    #         raise AuthenticationFailed("Unauthenticated!")
 
-        try:
-            payload = jwt.decode(token, "secret", algorithm=["HS256"])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Unauthenticated!")
+    #     try:
+    #         payload = jwt.decode(token, "secret", algorithm=["HS256"])
+    #     except jwt.ExpiredSignatureError:
+    #         raise AuthenticationFailed("Unauthenticated!")
 
-        user = User.objects.filter(id=payload["id"]).first()
-        if user.permission == "admin":
-            serializer = UserSerializer(user)
-            return Response(serializer.data)
-        else:
-            raise AuthenticationFailed("Not authorized!")
-        # get permission
-        # access
-
-        # return self.request.user.accounts.all()
+    #     user = User.objects.filter(id=payload["id"]).first()
+    #     if user.isAdmin:
+    #         qs = self.filter_queryset(qs)
+    #     else:
+    #         raise AuthenticationFailed("Not authorized!")
 
 
 class AirportViewSet(viewsets.ModelViewSet):
@@ -201,76 +158,11 @@ class AirportViewSet(viewsets.ModelViewSet):
             raise AuthenticationFailed("Unauthenticated!")
 
         user = User.objects.filter(id=payload["id"]).first()
-        if user.permission == "admin":
+        if user.isAdmin == "admin":
             serializer = UserSerializer(user)
             return Response(serializer.data)
         else:
             raise AuthenticationFailed("Not authorized!")
-
-    def create(self, request, *args, **kwargs):
-        token = request.COOKIES.get("jwt")
-        # print(token)
-        if not token:
-            raise AuthenticationFailed("Unauthenticated!")
-
-        try:
-            payload = jwt.decode(token, "secret", algorithm=["HS256"])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Unauthenticated!")
-
-        books = Book.objects.filter(pk=payload["id"]).first()
-        # print(payload["id"])
-        if books is not NULL:
-            # serializer = BookSerializers(books)
-            # return Response(serializer.data)
-            data = request.data
-
-            user = User.objects.get(id=data["user"])
-            flightdetails = FlightDetails.objects.get(id=data["flight"])
-
-            if flightdetails.remaining_seats > int(data["num_of_passengers"]) + 1:
-                new_book = Book.objects.create(
-                    # booking_date=data["booking_date"],
-                    trip_date=data["trip_date"],
-                    num_of_passengers=data["num_of_passengers"],
-                    total_price=data["total_price"],
-                    user=user,
-                    flight=flightdetails,
-                )
-                new_book.save()
-                for passenger in data["passengers"]:
-
-                    p = Passenger.objects.create(
-                        aadharno=passenger["aadharno"],
-                        name=passenger["name"],
-                        address=passenger["address"],
-                        telephone_number=passenger["telephone_number"],
-                        emailid=passenger["emailid"],
-                        gender=passenger["gender"],
-                        age=passenger["age"],
-                        user=User.objects.get(id=data["user"]),
-                    )
-                    new_book.passenger.add(p)
-                    updated_remaining_Seats = (
-                        flightdetails.remaining_seats
-                        - int(data["num_of_passengers"])
-                        - 1
-                    )
-                    FlightDetails.objects.filter(pk=flightdetails.pk).update(
-                        remaining_seats=updated_remaining_Seats
-                    )
-            else:
-                return JsonResponse(
-                    {
-                        "Message": "Oops!!SOrry seats not available",
-                        "status": status.HTTP_403_FORBIDDEN,
-                    }
-                )
-
-            serializers = BookSerializers(new_book)
-            return Response(serializers.data)
-        else:
-            raise AuthenticationFailed("SOrry,User not found!")
 
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -330,42 +222,50 @@ class BookViewSet(viewsets.ModelViewSet):
             data = request.data
             user = User.objects.get(id=data["user"])
             flightdetails = FlightDetails.objects.get(id=data["flight"])
-
-            if flightdetails.remaining_seats > int(data["num_of_passengers"]) + 1:
-                new_book = Book.objects.create(
-                    # booking_date=data["booking_date"],
-                    trip_date=data["trip_date"],
-                    num_of_passengers=data["num_of_passengers"],
-                    total_price=data["total_price"],
-                    user=user,
-                    flight=flightdetails,
-                )
-                new_book.save()
-                for passenger in data["passengers"]:
-
-                    p = Passenger.objects.create(
-                        aadharno=passenger["aadharno"],
-                        name=passenger["name"],
-                        address=passenger["address"],
-                        telephone_number=passenger["telephone_number"],
-                        emailid=passenger["emailid"],
-                        gender=passenger["gender"],
-                        age=passenger["age"],
-                        user=User.objects.get(id=data["user"]),
+            if len(data["passengers"]) == data["num_of_passengers"]:
+                if flightdetails.remaining_seats > int(data["num_of_passengers"]) + 1:
+                    new_book = Book.objects.create(
+                        # booking_date=data["booking_date"],
+                        trip_date=data["trip_date"],
+                        num_of_passengers=data["num_of_passengers"],
+                        total_price=data["total_price"],
+                        user=user,
+                        flight=flightdetails,
                     )
-                    new_book.passenger.add(p)
-                    updated_remaining_Seats = (
-                        flightdetails.remaining_seats
-                        - int(data["num_of_passengers"])
-                        - 1
-                    )
-                    FlightDetails.objects.filter(pk=flightdetails.pk).update(
-                        remaining_seats=updated_remaining_Seats
+                    new_book.save()
+                    print(len(data["passengers"]))
+                    for passenger in data["passengers"]:
+
+                        p = Passenger.objects.create(
+                            aadharno=passenger["aadharno"],
+                            name=passenger["name"],
+                            address=passenger["address"],
+                            telephone_number=passenger["telephone_number"],
+                            emailid=passenger["emailid"],
+                            gender=passenger["gender"],
+                            age=passenger["age"],
+                            user=User.objects.get(id=data["user"]),
+                        )
+                        new_book.passenger.add(p)
+                        updated_remaining_Seats = (
+                            flightdetails.remaining_seats
+                            - int(data["num_of_passengers"])
+                            - 1
+                        )
+                        FlightDetails.objects.filter(pk=flightdetails.pk).update(
+                            remaining_seats=updated_remaining_Seats
+                        )
+                else:
+                    return JsonResponse(
+                        {
+                            "Message": "Oops!!SOrry seats not available",
+                            "status": status.HTTP_403_FORBIDDEN,
+                        }
                     )
             else:
                 return JsonResponse(
                     {
-                        "Message": "Oops!!SOrry seats not available",
+                        "Message": "Oops!!not all Passengers detail were Given",
                         "status": status.HTTP_403_FORBIDDEN,
                     }
                 )
@@ -374,35 +274,3 @@ class BookViewSet(viewsets.ModelViewSet):
             return Response(serializers.data)
         else:
             raise AuthenticationFailed("Sorry,User not found!")
-
-
-# class PostFlightWritePermission(BasePermission):
-#     message = "Editing or creating the flight details is only limited to admins"
-
-#     def has_object_permission(self, request, view, obj):
-#         if request.user.is_superuser:
-#             return True
-# class ExampleAuthentication(authentication.BaseAuthentication):
-#     def authenticate(self, request):
-#         token = request.COOKIES.get("jwt")
-
-#         if not token:
-#             raise AuthenticationFailed("Unauthenticated!")
-
-#         try:
-#             payload = jwt.decode(token, "secret", algorithm=["HS256"])
-#         except jwt.ExpiredSignatureError:
-#             raise AuthenticationFailed("Unauthenticated!")
-
-#         user = User.objects.filter(id=payload["id"]).first()
-#         serializer = UserSerializer(user)
-#         # return Response(serializer.data)
-
-#         # username = request.META.get("HTTP_X_USERNAME")
-#         if not user:
-#             raise exceptions.AuthenticationFailed("No such user")
-
-#         return (serializer, None)
-# class UserViewSet(viewsets.ModelViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
