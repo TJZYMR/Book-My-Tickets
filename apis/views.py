@@ -2,6 +2,8 @@ from asyncio.windows_events import NULL
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
+
+from apis.auth import authenticateusingcookie
 from .serializers import UserSerializer
 from .models import User
 import jwt, datetime
@@ -30,6 +32,7 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .auth import authenticateusingcookie, authorizationusingcookie
 
 # from django.contrib.auth.models import User
 
@@ -76,19 +79,20 @@ class LoginView(APIView):
 
 class UserView(APIView):
     def get(self, request):
-        token = request.COOKIES.get("token")
+        # token = request.COOKIES.get("token")
 
-        if not token:
-            raise AuthenticationFailed("Unauthenticated!")
+        # if not token:
+        #     raise AuthenticationFailed("Unauthenticated!")
 
-        try:
-            payload = jwt.decode(token, "secret", algorithm=["HS256"])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Unauthenticated!")
-
-        user = User.objects.filter(id=payload["id"]).first()
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
+        # try:
+        #     payload = jwt.decode(token, "secret", algorithm=["HS256"])
+        # except jwt.ExpiredSignatureError:
+        #     raise AuthenticationFailed("Unauthenticated!")
+        payload = authenticateusingcookie(request)
+        data1 = authorizationusingcookie(payload123=payload)
+        # user = User.objects.filter(id=payload["id"]).first()
+        # serializer = UserSerializer(user)
+        return Response(data1.data)
 
 
 class LogoutView(APIView):
@@ -122,23 +126,6 @@ class FlightDetailsViewSet(viewsets.ModelViewSet):
         "airport",
     ]
 
-    # def list(self, request, *args, **kwargs):
-    #     token = request.COOKIES.get("token")
-
-    #     if not token:
-    #         raise AuthenticationFailed("Unauthenticated!")
-
-    #     try:
-    #         payload = jwt.decode(token, "secret", algorithm=["HS256"])
-    #     except jwt.ExpiredSignatureError:
-    #         raise AuthenticationFailed("Unauthenticated!")
-
-    #     user = User.objects.filter(id=payload["id"]).first()
-    #     if user.isAdmin:
-    #         qs = self.filter_queryset(qs)
-    #     else:
-    #         raise AuthenticationFailed("Not authorized!")
-
 
 class AirportViewSet(viewsets.ModelViewSet):
     queryset = Airport.objects.all()
@@ -147,22 +134,27 @@ class AirportViewSet(viewsets.ModelViewSet):
     # permission_classes = [AllowAny | ReadOnly]
     # permission_classes = [IsAuthenticated | IsAdminUser]
     def list(self, request):
-        token = request.COOKIES.get("token")
+        payload = authenticateusingcookie(request)
+        data1 = authorizationusingcookie(payload123=payload)
+        # user = User.objects.filter(id=payload["id"]).first()
+        # serializer = UserSerializer(user)
+        return Response(data1.data)
+        # token = request.COOKIES.get("token")
 
-        if not token:
-            raise AuthenticationFailed("Unauthenticated!")
+        # if not token:
+        #     raise AuthenticationFailed("Unauthenticated!")
 
-        try:
-            payload = jwt.decode(token, "secret", algorithm=["HS256"])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Unauthenticated!")
+        # try:
+        #     payload = jwt.decode(token, "secret", algorithm=["HS256"])
+        # except jwt.ExpiredSignatureError:
+        #     raise AuthenticationFailed("Unauthenticated!")
 
-        user = User.objects.filter(id=payload["id"]).first()
-        if user.isAdmin == "admin":
-            serializer = UserSerializer(user)
-            return Response(serializer.data)
-        else:
-            raise AuthenticationFailed("Not authorized!")
+        # user = User.objects.filter(id=payload["id"]).first()
+        # if user.isAdmin == "admin":
+        #     serializer = UserSerializer(user)
+        #     return Response(serializer.data)
+        # else:
+        #     raise AuthenticationFailed("Not authorized!")
 
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -172,15 +164,8 @@ class BookViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]
 
     def get_queryset(self, request):
-        token = request.COOKIES.get("jwt")
 
-        if not token:
-            raise AuthenticationFailed("Unauthenticated!")
-
-        try:
-            payload = jwt.decode(token, "secret", algorithm=["HS256"])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Unauthenticated!")
+        payload = authenticateusingcookie(request)
 
         books = Book.objects.filter(id=payload["id"]).first()
         if books:
@@ -190,33 +175,32 @@ class BookViewSet(viewsets.ModelViewSet):
             raise AuthenticationFailed("Sorry,User not found!")
 
     def list(self, request):
-        token = request.COOKIES.get("token")
+        # token = request.COOKIES.get("token")
 
-        if not token:
-            raise AuthenticationFailed("Unauthenticated!")
+        # if not token:
+        #     raise AuthenticationFailed("Unauthenticated!")
 
-        try:
-            payload = jwt.decode(token, "secret", algorithm=["HS256"])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Unauthenticated!")
+        # try:
+        #     payload = jwt.decode(token, "secret", algorithm=["HS256"])
+        # except jwt.ExpiredSignatureError:
+        #     raise AuthenticationFailed("Unauthenticated!")
 
-        user = User.objects.filter(id=payload["id"]).first()
-        if user.permission == "admin":
-            serializer = UserSerializer(user)
-            return Response(serializer.data)
-        else:
-            raise AuthenticationFailed("Not authorized!")
+        # user = User.objects.filter(id=payload["id"]).first()
+        # if user.isAdmin:
+        #     serializer = UserSerializer(user)
+        #     return Response(serializer.data)
+        # else:
+        #     raise AuthenticationFailed("Not authorized!")
+
+        payload = authenticateusingcookie(request)
+        data1 = authorizationusingcookie(payload123=payload)
+        # user = User.objects.filter(id=payload["id"]).first()
+        # serializer = UserSerializer(user)
+        return Response(data1.data)
 
     def create(self, request, *args, **kwargs):
-        token = request.COOKIES.get("token")
-        if not token:
-            raise AuthenticationFailed("Unauthenticated!")
 
-        try:
-            payload = jwt.decode(token, "secret", algorithm=["HS256"])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Unauthenticated!")
-
+        payload = authenticateusingcookie(request)
         books = Book.objects.filter(pk=payload["id"]).first()
         if books is not NULL:
             data = request.data
@@ -233,7 +217,7 @@ class BookViewSet(viewsets.ModelViewSet):
                         flight=flightdetails,
                     )
                     new_book.save()
-                    print(len(data["passengers"]))
+                    # print(len(data["passengers"]))
                     for passenger in data["passengers"]:
 
                         p = Passenger.objects.create(
