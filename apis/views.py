@@ -32,7 +32,11 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .auth import authenticateusingcookie, authorizationusingcookie
+from .auth import (
+    authenticateusingcookie,
+    authorizationusingcookie,
+    authorizationusingcookieforflight,
+)
 
 # from django.contrib.auth.models import User
 
@@ -125,6 +129,50 @@ class FlightDetailsViewSet(viewsets.ModelViewSet):
         "departure_time",
         "airport",
     ]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(
+            self.get_queryset()
+        )  # this is what i was searching for very much
+        token = request.COOKIES.get("token")
+        payload = jwt.decode(token, "secret", algorithm=["HS256"])
+        # data1 = authorizationusingcookie(payload123=payload)
+
+        serializer = self.get_serializer(queryset, many=True)
+        print("reached here")
+        return Response(serializer.data)
+
+    def create(self, request):
+        payload = authenticateusingcookie(request)
+        data1 = authorizationusingcookieforflight(payload123=payload)
+        data1 = FlightDetailsSerializers(data=request.data)
+        return super().create(request)
+
+    def update(self, request, pk=None):
+        payload = authenticateusingcookie(request)
+        authorizationusingcookieforflight(payload123=payload)
+
+        # if data1.is_valid():
+        #     data1.save()
+        # return Response(data1.data)
+
+        flight = FlightDetails.objects.get(id=pk)
+        serializer = FlightDetailsSerializers(instance=flight, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+        return Response(serializer.data)
+
+    def destroy(self, request, pk=None):
+
+        payload = authenticateusingcookie(request)
+        authorizationusingcookieforflight(payload123=payload)
+        flight = FlightDetails.objects.get(id=pk)
+
+        flight.delete()
+
+        return Response("Item succsesfully delete!")
 
 
 class AirportViewSet(viewsets.ModelViewSet):

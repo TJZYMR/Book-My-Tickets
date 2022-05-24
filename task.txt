@@ -1,0 +1,3 @@
+1.creating logging for only 1 file out of 10.Means like for example only models files logs should be entried in the file.
+2.creating logging for only one level means ,only debug level should be there like that
+3.try out all unittest like unittest,pytest,etc and then we will decide with sagar

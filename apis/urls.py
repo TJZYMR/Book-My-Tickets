@@ -25,7 +25,16 @@ urlpatterns = [
         "passengers", PassengerViewSet.as_view({"get": "list"})
     ),  # Only the user who booked the flight can view the passengers associated with that booking and with that User.
     path(  # Post and Get Allowed
-        "flight_details", FlightDetailsViewSet.as_view({"get": "list"})
+        "flight_details",
+        FlightDetailsViewSet.as_view({"get": "list", "post": "create"}),
+    ),  # Any user can view this,but only superuser can modify the Database
+    path(  # Post and Get Allowed
+        "flight_details/<int:pk>/",
+        FlightDetailsViewSet.as_view({"delete": "destroy"}),
+    ),  # Any user can view this,but only superuser can modify the Database
+    path(  # Post and Get Allowed
+        "flight_details/<int:pk>/",
+        FlightDetailsViewSet.as_view({"put": "update"}),
     ),  # Any user can view this,but only superuser can modify the Database
     path(
         "booking", BookViewSet.as_view({"post": "create", "get": "list"})

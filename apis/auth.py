@@ -20,8 +20,18 @@ def authenticateusingcookie(request):
 
 def authorizationusingcookie(payload123):
     user = User.objects.filter(id=payload123["id"]).first()
-    if user.isAdmin:
+    if user.permission == "admin":
         serializer = UserSerializer(user)
         return serializer
+    else:
+        raise AuthenticationFailed("Not authorized!")
+
+
+def authorizationusingcookieforflight(payload123):
+    user = User.objects.filter(id=payload123["id"]).first()
+    print(user.isAdmin)
+    if user.permission == "admin":
+        # serializer = UserSerializer(user)
+        return user
     else:
         raise AuthenticationFailed("Not authorized!")
