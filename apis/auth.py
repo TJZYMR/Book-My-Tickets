@@ -4,11 +4,16 @@ from .models import User
 from .serializers import UserSerializer
 import jwt
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def authenticateusingcookie(request):
     token = request.COOKIES.get("token")
 
     if not token:
+        logger.warning("User being authenticated and token not found ......")
         raise AuthenticationFailed("Unauthenticated!")
 
     try:

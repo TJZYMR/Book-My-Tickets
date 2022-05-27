@@ -1,4 +1,6 @@
 from asyncio.windows_events import NULL
+import stat
+from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
@@ -44,13 +46,19 @@ from .auth import (
 from rest_framework import exceptions
 from rest_framework import permissions
 
+# import logging
+
+# logger = logging.getLogger(__name__)
+import logging
+
+logger = logging.getLogger(__name__)
 # Create your views here.
 class RegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class LoginView(APIView):
@@ -134,10 +142,10 @@ class FlightDetailsViewSet(viewsets.ModelViewSet):
         queryset = self.filter_queryset(
             self.get_queryset()
         )  # this is what i was searching for very much
-        token = request.COOKIES.get("token")
-        payload = jwt.decode(token, "secret", algorithm=["HS256"])
         # data1 = authorizationusingcookie(payload123=payload)
-
+        logger.debug(
+            "filtering queryset on the basis of the query param is being fetched"
+        )
         serializer = self.get_serializer(queryset, many=True)
         print("reached here")
         return Response(serializer.data)
@@ -254,7 +262,8 @@ class BookViewSet(viewsets.ModelViewSet):
             data = request.data
             user = User.objects.get(id=data["user"])
             flightdetails = FlightDetails.objects.get(id=data["flight"])
-            if len(data["passengers"]) == data["num_of_passengers"]:
+            print(len(data["passengers"]))
+            if len(data["passengers"]) == int(data["num_of_passengers"]):
                 if flightdetails.remaining_seats > int(data["num_of_passengers"]) + 1:
                     new_book = Book.objects.create(
                         # booking_date=data["booking_date"],

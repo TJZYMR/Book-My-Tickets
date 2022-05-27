@@ -10,7 +10,6 @@ from .views import (
     BookViewSet,
 )
 
-
 urlpatterns = [
     path("register", RegisterView.as_view(), name="reg"),
     path("login", LoginView.as_view()),
