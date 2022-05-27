@@ -40,9 +40,14 @@ INSTALLED_APPS = [
     "apis",
     # "rest_framework_swagger",
     # "django.contrib.staticfiles",  # required for serving swagger ui's css/js files
-    "drf_yasg",
+    # "drf_yasg",
+    # "django_nose",
 ]
-
+# TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
+# NOSE_ARGS = [
+#     "--with-coverage",
+#     "--cover-package=apis",
+# ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -125,30 +130,45 @@ AUTH_USER_MODEL = "apis.User"
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 REST_AUTH_SERIALIZERS = {"USER_DETAILS_SERIALIZER": "users.serializer.UserSerializer"}
-# import os
+import os
 
-# LOGGING = {
-#     "formatters": {
-#         "verbose": {
-#             "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
-#             "style": "{",
-#         },
-#     },
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "handlers": {
-#         "file": {
-#             "level": "DEBUG",
-#             "class": "logging.FileHandler",
-#             "filename": "./debug.log",
-#             "formatter": "verbose",
-#         },
-#     },
-#     "loggers": {
-#         "django": {
-#             "handlers": ["file"],
-#             "level": "DEBUG",
-#             "propagate": True,
-#         },
-#     },
-# }
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "./logs.log",
+            "formatter": "verbose",
+        },
+        "file1": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "./logs123.log",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "apis": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+        "apis.auth": {
+            "handlers": ["file1"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
