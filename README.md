@@ -1,5 +1,5 @@
 
-# BookMyShow
+# BookMyTickets
 APIS:
 
 1)/register
