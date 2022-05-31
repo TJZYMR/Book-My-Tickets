@@ -91,20 +91,11 @@ class LoginView(APIView):
 
 class UserView(APIView):
     def get(self, request):
-        # token = request.COOKIES.get("token")
 
-        # if not token:
-        #     raise AuthenticationFailed("Unauthenticated!")
-
-        # try:
-        #     payload = jwt.decode(token, "secret", algorithm=["HS256"])
-        # except jwt.ExpiredSignatureError:
-        #     raise AuthenticationFailed("Unauthenticated!")
         payload = authenticateusingcookie(request)
-        data1 = authorizationusingcookie(payload123=payload)
-        # user = User.objects.filter(id=payload["id"]).first()
-        # serializer = UserSerializer(user)
-        return Response(data1.data)
+        user = User.objects.filter(id=payload["id"]).first()
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
 
 
 class LogoutView(APIView):
@@ -191,10 +182,9 @@ class AirportViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated | IsAdminUser]
     def list(self, request):
         payload = authenticateusingcookie(request)
-        data1 = authorizationusingcookie(payload123=payload)
-        # user = User.objects.filter(id=payload["id"]).first()
-        # serializer = UserSerializer(user)
-        return Response(data1.data)
+        user = User.objects.filter(id=payload["id"]).first()
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
         # token = request.COOKIES.get("token")
 
         # if not token:

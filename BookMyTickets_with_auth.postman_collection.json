@@ -1,0 +1,372 @@
+{
+	"info": {
+		"_postman_id": "ae75a1c5-fdf3-4e0d-9039-83bdbc37b6ba",
+		"name": "BookMyTickets_with_auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Flight_Details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/flight_details",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"flight_details"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Flight_Details_filters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/flight_details?airline_name=lufthansa",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"flight_details"
+					],
+					"query": [
+						{
+							"key": "flight_name",
+							"value": "jalag",
+							"disabled": true
+						},
+						{
+							"key": "source_airport",
+							"value": "AMD",
+							"disabled": true
+						},
+						{
+							"key": "destination_airport",
+							"value": "DLH",
+							"disabled": true
+						},
+						{
+							"key": "airline_name",
+							"value": "lufthansa"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/user",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login_registered_user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"k@gmail.com\",\r\n    \"password\":\"k\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/logout",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login_unregistered_user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"mj@gmail.com\",\r\n    \"password\":\"mj\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/user",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"kkk\",\r\n    \"email\":\"k@gmail.com\",\r\n    \"password\":\"k\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/register",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Booking_with_authenticated_user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"booking_date\": \"2022-05-31\",\r\n    \"trip_date\": \"2022-05-09\",\r\n    \"num_of_passengers\": \"2\",\r\n    \"total_price\": \"2000\",\r\n    \"user\": 4,\r\n    \"flight\": 8,\r\n    \"passengers\": [\r\n       {\r\n            \"aadharno\":\"6677889910\",\r\n            \"name\": \"Alka Joshi\",\r\n            \"address\": \"address4\",\r\n            \"telephone_number\": \"7984795244\",\r\n            \"emailid\": \"aj@gamil.com\",\r\n            \"gender\": \"female\",\r\n            \"age\": \"50\",\r\n            \"user\": 4\r\n        },\r\n        {\r\n            \"aadharno\":\"232667710\",\r\n            \"name\": \"ram sharma\",\r\n            \"address\": \"addresssdsd4\",\r\n            \"telephone_number\": \"9984767244\",\r\n            \"emailid\": \"rs@gamil.com\",\r\n            \"gender\": \"male\",\r\n            \"age\": \"30\",\r\n            \"user\": 4\r\n        }]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/booking",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Booking_with_unauthenticated_user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"booking_date\": \"2022-05-31\",\r\n    \"trip_date\": \"2022-05-09\",\r\n    \"num_of_passengers\": \"2\",\r\n    \"total_price\": \"2000\",\r\n    \"user\": 4,\r\n    \"flight\": 8,\r\n    \"passengers\": [\r\n       {\r\n            \"aadharno\":\"6677889910\",\r\n            \"name\": \"Alka Joshi\",\r\n            \"address\": \"address4\",\r\n            \"telephone_number\": \"7984795244\",\r\n            \"emailid\": \"aj@gamil.com\",\r\n            \"gender\": \"female\",\r\n            \"age\": \"50\",\r\n            \"user\": 4\r\n        },\r\n        {\r\n            \"aadharno\":\"232667710\",\r\n            \"name\": \"ram sharma\",\r\n            \"address\": \"addresssdsd4\",\r\n            \"telephone_number\": \"9984767244\",\r\n            \"emailid\": \"rs@gamil.com\",\r\n            \"gender\": \"male\",\r\n            \"age\": \"30\",\r\n            \"user\": 4\r\n        }]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/booking",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Booking_with_remaining_seats",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"booking_date\": \"2022-05-04\",\r\n    \"trip_date\": \"2022-12-04\",\r\n    \"num_of_passengers\": \"1\",\r\n    \"total_price\": \"2000\",\r\n    \"user\": 4,\r\n    \"flight\": 2,\r\n    \"passengers\": [\r\n        {\r\n            \"aadharno\": \"6677889910\",\r\n            \"name\": \"Alka Joshi\",\r\n            \"address\": \"address4\",\r\n            \"telephone_number\": \"7984795244\",\r\n            \"emailid\": \"aj@gamil.com\",\r\n            \"gender\": \"female\",\r\n            \"age\": \"50\",\r\n            \"user\": 4\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/booking",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Booking_with_passenger_info_not_all",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"booking_date\": \"2022-05-31\",\r\n    \"trip_date\": \"2022-05-09\",\r\n    \"num_of_passengers\": \"2\",\r\n    \"total_price\": \"2000\",\r\n    \"user\": 4,\r\n    \"flight\": 8,\r\n    \"passengers\": [\r\n       \r\n        {\r\n            \"aadharno\":\"232667710\",\r\n            \"name\": \"ram sharma\",\r\n            \"address\": \"addresssdsd4\",\r\n            \"telephone_number\": \"9984767244\",\r\n            \"emailid\": \"rs@gamil.com\",\r\n            \"gender\": \"male\",\r\n            \"age\": \"30\",\r\n            \"user\": 4\r\n        }]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/booking",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"booking"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
