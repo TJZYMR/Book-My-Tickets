@@ -1,7 +1,12 @@
+from email.policy import default
+from enum import unique
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+from django.db.models import CharField, Model
+from autoslug import AutoSlugField
+from pyparsing import null_debug_action
 
 # Create your models here.
 
@@ -121,6 +126,12 @@ class FlightDetails(models.Model):
     total_seats = models.CharField(max_length=200)
     price = models.CharField(max_length=200)
     airport = models.ForeignKey(Airport, on_delete=models.CASCADE)
+    slug = AutoSlugField(
+        editable=True,
+        populate_from="flight_name",
+        unique_with="airport__name",
+        default=None,
+    )
 
     def __str__(self):
         return self.flight_name

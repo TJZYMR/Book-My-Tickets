@@ -39,6 +39,7 @@ from .auth import (
     authorizationusingcookie,
     authorizationusingcookieforflight,
 )
+from rest_framework.decorators import api_view
 
 # from django.contrib.auth.models import User
 
@@ -112,6 +113,27 @@ class PassengerViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         passenger = Passenger.objects.all()
         return passenger
+
+
+from rest_framework import generics
+
+import json
+
+
+class FlightDetailsViewSetwithslug(APIView):
+    def get(self, request, slug):
+        print(slug)
+        q = FlightDetails.objects.filter(slug=str(slug))
+        serializer = FlightDetailsSerializers(q, many=True)
+        return Response(
+            {"data": serializer.data},
+            status=status.HTTP_200_OK,
+        )
+        # else:
+        #     return Response(
+        #         {"message": "Flight Details not found"},
+        #         status=status.HTTP_404_NOT_FOUND,
+        #     )
 
 
 class FlightDetailsViewSet(viewsets.ModelViewSet):
