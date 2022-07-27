@@ -27,6 +27,7 @@ class FlightDetailsSerializers(serializers.ModelSerializer):
     class Meta:
         model = FlightDetails
         fields = "__all__"
+        # lookup_field = "slug"
 
 
 class PassengerSerializers(serializers.ModelSerializer):

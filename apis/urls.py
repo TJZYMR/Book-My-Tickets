@@ -8,6 +8,7 @@ from .views import (
     FlightDetailsViewSet,
     AirportViewSet,
     BookViewSet,
+    FlightDetailsViewSetwithslug,
 )
 
 urlpatterns = [
@@ -31,6 +32,10 @@ urlpatterns = [
         "flight_details/<int:pk>/",
         FlightDetailsViewSet.as_view({"delete": "destroy"}),
     ),  # Any user can view this,but only superuser can modify the Database
+    path(  # Post and Get Allowed
+        "flight_details/<str:slug>/",
+        FlightDetailsViewSetwithslug.as_view(),
+    ),
     path(  # Post and Get Allowed
         "flight_details/<int:pk>/",
         FlightDetailsViewSet.as_view({"put": "update"}),
