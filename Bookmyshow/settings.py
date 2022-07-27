@@ -25,7 +25,7 @@ SECRET_KEY = "%1hl^rjd=bh!5gxi7my54h^lk7(dk-*y8%4qzgnihf-b+y#u0i"
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["127.0.0.1", ".herokuapp.com"]
 
 # Application definition
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "apis",
+    "whitenoise.runserver_nostatic",
     # "rest_framework_swagger",
     # "django.contrib.staticfiles",  # required for serving swagger ui's css/js files
     # "drf_yasg",
@@ -59,7 +60,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 ROOT_URLCONF = "Bookmyshow.urls"
@@ -91,9 +91,23 @@ DATABASES = {
     }
 }
 DEBUG = False
-db_from_env = dj_database_url.config()
+import dj_database_url
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "postgresql-crystalline-85632",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "localhost",
+        "PORT": "",
+    }
+}
+WHITENOISE_USE_FINDERS = True
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES["default"].update(db_from_env)
-# Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -176,6 +190,6 @@ LOGGING = {
         },
     },
 }
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
-STATICFILES_STORAGE = "whitenoise.django.GzipManifestStaticFilesStorage"
+# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+# STATICFILES_STORAGE = "whitenoise.django.GzipManifestStaticFilesStorage"
